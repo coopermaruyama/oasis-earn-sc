@@ -1,8 +1,11 @@
 import {
   arbitrumConfig,
+  baseConfig,
   goerliConfig,
   mainnetConfig,
   optimismConfig,
+  sepoliaConfig,
+  testConfig,
 } from '@deploy-configurations/configs'
 import { ADDRESS_ZERO as zeroAddress } from '@deploy-configurations/constants'
 import { Address } from '@deploy-configurations/types/address'
@@ -66,7 +69,10 @@ export type Addresses = {
   [Network.MAINNET]: DefaultDeployment
   [Network.OPTIMISM]: DefaultDeployment
   [Network.ARBITRUM]: DefaultDeployment
+  [Network.BASE]: DefaultDeployment
   [Network.GOERLI]: DefaultDeployment
+  [Network.SEPOLIA]: DefaultDeployment
+  [Network.TEST]: DefaultDeployment
 }
 
 if (!mainnetConfig.aave.v2) throw new Error('Missing aave v2 config on mainnet')
@@ -124,15 +130,6 @@ function hasSparkConfig(
   return !!config && 'PoolDataProvider' in config && 'LendingPool' in config && 'Oracle' in config
 }
 
-export const ADDRESSES: Addresses = {
-  [Network.MAINNET]: createAddressesStructure(mainnetConfig),
-  [Network.OPTIMISM]: createAddressesStructure(optimismConfig),
-  [Network.GOERLI]: createAddressesStructure(goerliConfig, goerliConfig),
-  [Network.ARBITRUM]: createAddressesStructure(arbitrumConfig, mainnetConfig),
-}
-
-export const ADDRESS_ZERO = zeroAddress
-
 type ExtractAddressesFromConfig<T extends Contracts> = Record<T, ConfigEntry>
 
 function extractAddressesFromConfig<T extends Contracts>(
@@ -148,3 +145,17 @@ function extractAddressesFromConfig<T extends Contracts>(
     {} as Record<T, Address>,
   )
 }
+
+export const ADDRESSES: Addresses = {
+  [Network.MAINNET]: createAddressesStructure(mainnetConfig),
+  [Network.OPTIMISM]: createAddressesStructure(optimismConfig),
+  [Network.GOERLI]: createAddressesStructure(goerliConfig, goerliConfig),
+  [Network.ARBITRUM]: createAddressesStructure(arbitrumConfig, mainnetConfig),
+  [Network.BASE]: createAddressesStructure(baseConfig, mainnetConfig),
+  [Network.TEST]: createAddressesStructure(testConfig),
+  [Network.SEPOLIA]: createAddressesStructure(sepoliaConfig),
+}
+
+export const ADDRESS_ZERO = zeroAddress
+export type { Common }
+export { SystemKeys }

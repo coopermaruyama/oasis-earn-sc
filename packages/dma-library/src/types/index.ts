@@ -14,6 +14,7 @@ import {
 } from './ajna'
 import type { Strategy } from './common'
 import { FlashloanProvider } from './common'
+import { MorphoBlueMarket, MorphoBluePosition } from './morphoblue'
 import type {
   IOperation,
   WithAjnaBucketPrice,
@@ -111,3 +112,6 @@ export type {
 }
 export type { SwapData }
 export type { Swap }
+
+export { MorphoBluePosition }
+export type { MorphoBlueMarket }

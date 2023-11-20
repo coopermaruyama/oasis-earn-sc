@@ -306,6 +306,38 @@ export const config: SystemConfig = {
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
       },
+      MorphoBlueBorrow: {
+        name: 'MorphoBlueBorrow',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.BORROW,
+        history: ['0x0000000000000000000000000000000000000000'],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
+      MorphoBlueWithdraw: {
+        name: 'MorphoBlueWithdraw',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW,
+        history: ['0x0000000000000000000000000000000000000000'],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
+      MorphoBlueDeposit: {
+        name: 'MorphoBlueDeposit',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.DEPOSIT,
+        history: ['0x0000000000000000000000000000000000000000'],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
+      MorphoBluePayback: {
+        name: 'MorphoBluePayback',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.PAYBACK,
+        history: ['0x0000000000000000000000000000000000000000'],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
     },
   },
   common: {
@@ -612,6 +644,10 @@ export const config: SystemConfig = {
       name: 'USDC',
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC,
+    },
+    USDBC: {
+      name: 'USDBC',
+      address: '0x0000000000000000000000000000000000000000',
     },
     USDT: {
       name: 'USDT',
@@ -1299,6 +1335,13 @@ export const config: SystemConfig = {
       name: 'ERC20PoolFactory',
       address: '0xe6f4d9711121e5304b30ac2aae57e3b085ad3c4d',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.ajna.ERC20_POOL_FACTORY,
+    },
+  },
+  morphoblue: {
+    MorphoBlue: {
+      name: 'MorphoBlue',
+      address: '0x0000000000000000000000000000000000000000',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
     },
   },
 }

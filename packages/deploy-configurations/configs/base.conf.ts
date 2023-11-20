@@ -239,7 +239,7 @@ export const config: SystemConfig = {
     },
     BalancerVault: {
       name: 'BalancerVault',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.BALANCER_VAULT,
     },
     FeeRecipient: {
@@ -252,7 +252,7 @@ export const config: SystemConfig = {
     },
     OneInchAggregator: {
       name: 'OneInchAggregator',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0x1111111254eeb25477b68fb85ed929f73a960582',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR,
     },
     MerkleRedeemer: {
@@ -365,7 +365,7 @@ export const config: SystemConfig = {
     },
     CBETH: {
       name: 'CBETH',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22',
     },
     CRVV1ETHSTETH: {
       name: 'CRVV1ETHSTETH',
@@ -534,12 +534,16 @@ export const config: SystemConfig = {
     },
     USDC: {
       name: 'USDC',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC,
     },
     USDT: {
       name: 'USDT',
       address: '0x0000000000000000000000000000000000000000',
+    },
+    USDBC: {
+      name: 'USDBC',
+      address: '0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca',
     },
     WBTC: {
       name: 'WBTC',
@@ -548,7 +552,7 @@ export const config: SystemConfig = {
     },
     WETH: {
       name: 'WETH',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0x4200000000000000000000000000000000000006',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.WETH,
     },
     WLD: {
@@ -1206,6 +1210,13 @@ export const config: SystemConfig = {
       name: 'ERC20PoolFactory',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: undefined,
+    },
+  },
+  morphoblue: {
+    MorphoBlue: {
+      name: 'MorphoBlue',
+      address: '0x0000000000000000000000000000000000000000',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
     },
   },
 }

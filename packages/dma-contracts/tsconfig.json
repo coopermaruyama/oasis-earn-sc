@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
     "paths": {
+      "@typechain": ["./typechain/index.ts"],
       "@typechain/*": ["./typechain/*"],
       "@abis/*": ["../abis/*"],
       "@ajna-contracts/*": ["../ajna-contracts/*"],
@@ -28,7 +29,9 @@
         "../deploy-configurations/operation-definitions/index.ts"
       ],
       "@domain/*": ["../domain/src/*"],
-      "@domain": ["../domain/src/index.ts"]
+      "@domain": ["../domain/src/index.ts"],
+      "@morpho-blue": ["../morpho-blue/scripts/"],
+      "@morpho-blue/typechain": ["../morpho-blue/typechain/index.ts"]
     },
     "typeRoots": ["../../node_modules/@types"]
   },
@@ -50,12 +53,17 @@
     },
     {
       "path": "../ajna-contracts"
+    },
+    {
+      "path": "../morpho-blue"
     }
   ],
   "include": [
     "./test",
     "./tasks",
+    "./utils",
     "./scripts",
+    "./typechain",
     "./bootstrap-env.ts",
     "./hardhat.config.base.ts",
     "./hardhat.config.ts"

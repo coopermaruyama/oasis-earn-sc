@@ -637,6 +637,10 @@ export const config: SystemConfig = {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC,
     },
+    USDBC: {
+      name: 'USDBC',
+      address: '0x0000000000000000000000000000000000000000',
+    },
     USDT: {
       name: 'USDT',
       address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
@@ -1309,6 +1313,13 @@ export const config: SystemConfig = {
       name: 'ERC20PoolFactory',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.ajna.ERC20_POOL_FACTORY,
+    },
+  },
+  morphoblue: {
+    MorphoBlue: {
+      name: 'MorphoBlue',
+      address: '0x0000000000000000000000000000000000000000',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
     },
   },
 }

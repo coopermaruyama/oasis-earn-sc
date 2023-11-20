@@ -78,6 +78,9 @@ export const SERVICE_REGISTRY_NAMES = {
     DEPOSIT_BORROW: 'AjnaDepositBorrow',
     REPAY_WITHDRAW: 'AjnaRepayWithdraw',
   },
+  morphoblue: {
+    MORPHO_BLUE: 'MorphoBlue',
+  },
   test: {
     DUMMY_ACTION: 'DummyAction',
     DUMMY_OPTIONAL_ACTION: 'DummyOptionalAction',

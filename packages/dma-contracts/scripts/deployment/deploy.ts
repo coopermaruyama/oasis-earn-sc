@@ -27,6 +27,15 @@ import {
   getAjnaCloseToCollateralOperationDefinition,
   getAjnaCloseToQuoteOperationDefinition,
   getAjnaOpenOperationDefinition,
+  getMorphoBlueAdjustDownOperationDefinition,
+  getMorphoBlueAdjustUpOperationDefinition,
+  getMorphoBlueBorrowOperationDefinition,
+  getMorphoBlueCloseOperationDefinition,
+  getMorphoBlueDepositBorrowOperationDefinition,
+  getMorphoBlueDepositOperationDefinition,
+  getMorphoBlueOpenDepositBorrowOperationDefinition,
+  getMorphoBlueOpenOperationDefinition,
+  getMorphoBluePaybackWithdrawOperationDefinition,
   getSparkAdjustDownOperationDefinition,
   getSparkAdjustUpOperationDefinition,
   getSparkBorrowOperationDefinition,
@@ -55,6 +64,7 @@ import { Network } from '@deploy-configurations/types/network'
 import { NetworkByChainId } from '@deploy-configurations/utils/network/index'
 import { OperationsRegistry, ServiceRegistry } from '@deploy-configurations/utils/wrappers/index'
 import { loadContractNames } from '@dma-contracts/../deploy-configurations/constants'
+import { RecursivePartial } from '@dma-contracts/utils/recursive-partial'
 import Safe from '@safe-global/safe-core-sdk'
 import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
@@ -97,6 +107,7 @@ const gnosisSafeServiceUrl: Record<Network, string> = {
   [Network.BASE]: '',
   [Network.GOERLI]: 'https://safe-transaction-goerli.safe.global',
   [Network.TENDERLY]: '',
+  [Network.TEST]: '',
 }
 
 // HELPERS --------------------------
@@ -253,6 +264,9 @@ abstract class DeployedSystemHelpers {
 export class DeploymentSystem extends DeployedSystemHelpers {
   public config: SystemConfig | undefined
   public deployedSystem: SystemTemplate = {}
+  public network: Network
+  public provider: providers.JsonRpcProvider
+  public signer: Signer
   private readonly _cache = new NodeCache()
   private readonly isLocal: boolean
 
@@ -260,6 +274,8 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     super()
     this.hre = hre
     this.network = hre.network.name as Network
+    this.provider = hre.ethers.provider
+    this.signer = this.provider.getSigner()
     this.isLocal = this.network === Network.LOCAL
   }
 
@@ -294,6 +310,11 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     } catch (e) {
       console.error('Could not extend config', e)
     }
+  }
+
+  addConfigOverrides(configOverrides: RecursivePartial<SystemConfig>) {
+    if (!this.config) throw new Error('Config is not defined!')
+    this.config = _.merge(this.config, configOverrides)
   }
 
   findPath = (obj, target, parentPath) => {
@@ -607,6 +628,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       await this.promptBeforeDeployment()
     }
     for (const configItem of addressesConfig) {
+      this.log('DEPLOYING ', configItem.name, configItem.address)
       let constructorParams: Array<string | number> = []
 
       if (configItem.constructorArgs && configItem.constructorArgs?.length !== 0) {
@@ -655,6 +677,13 @@ export class DeploymentSystem extends DeployedSystemHelpers {
 
       await this.postDeployment(configItem, contractInstance, constructorParams)
     }
+  }
+  public async deployContractByName<C extends Contract>(
+    contractName: string,
+    params: any[],
+  ): Promise<C> {
+    const factory = await this.ethers.getContractFactory(contractName, this.signer)
+    return this.deployContract(factory, params)
   }
 
   public async deployContract<F extends ContractFactory, C extends Contract>(
@@ -727,6 +756,15 @@ export class DeploymentSystem extends DeployedSystemHelpers {
   async deployAll() {
     await this.deployCore()
     await this.deployActions()
+    await this.deployTest()
+  }
+
+  async deployTest() {
+    if (!this.config) throw new Error('No config set')
+    if (!this.config.test) return
+    await this.deployContracts(
+      Object.values(this.config.test).filter((item: SystemConfigEntry) => item.deploy),
+    )
   }
 
   async addCommonEntries() {
@@ -765,6 +803,20 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     if (!this.config) throw new Error('No config set')
     await this.addRegistryEntries(
       Object.values(this.config.ajna).filter(
+        (item: ConfigEntry) => item.address !== '' && item.serviceRegistryName,
+      ),
+    )
+  }
+
+  async addMorphoBlueEntries() {
+    if (!this.config) throw new Error('No config set')
+    const morpho = Object.values(this.config.morphoblue).filter(
+      (item: ConfigEntry) => item.address !== '' && item.serviceRegistryName,
+    )
+    console.log('MORPHO BLUE ENTRIES', morpho)
+    console.log('CONFIG', this.config.morphoblue)
+    await this.addRegistryEntries(
+      Object.values(this.config.morphoblue).filter(
         (item: ConfigEntry) => item.address !== '' && item.serviceRegistryName,
       ),
     )
@@ -963,7 +1015,73 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       sparkMigrateEOAOperationDefinition.actions,
     )
     this.logOp(sparkMigrateEOAOperationDefinition)
-    
+    // MorphoBlue
+    const morphoblueBorrowOperationDefinition = getMorphoBlueBorrowOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueBorrowOperationDefinition.name,
+      morphoblueBorrowOperationDefinition.actions,
+    )
+    this.logOp(morphoblueBorrowOperationDefinition)
+
+    const morphoblueDepositOperationDefinition = getMorphoBlueDepositOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueDepositOperationDefinition.name,
+      morphoblueDepositOperationDefinition.actions,
+    )
+    this.logOp(morphoblueDepositOperationDefinition)
+
+    const morphoblueDepositBorrowOperationDefinition =
+      getMorphoBlueDepositBorrowOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueDepositBorrowOperationDefinition.name,
+      morphoblueDepositBorrowOperationDefinition.actions,
+    )
+    this.logOp(morphoblueDepositBorrowOperationDefinition)
+
+    const morphoblueOpenDepositBorrowOperationDefinition =
+      getMorphoBlueOpenDepositBorrowOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueOpenDepositBorrowOperationDefinition.name,
+      morphoblueOpenDepositBorrowOperationDefinition.actions,
+    )
+    this.logOp(morphoblueOpenDepositBorrowOperationDefinition)
+
+    const morphobluePaybackWithdrawOperationDefinition =
+      getMorphoBluePaybackWithdrawOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphobluePaybackWithdrawOperationDefinition.name,
+      morphobluePaybackWithdrawOperationDefinition.actions,
+    )
+    this.logOp(morphobluePaybackWithdrawOperationDefinition)
+
+    const morphoblueOpenOperationDefinition = getMorphoBlueOpenOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueOpenOperationDefinition.name,
+      morphoblueOpenOperationDefinition.actions,
+    )
+    this.logOp(morphoblueOpenOperationDefinition)
+
+    const morphoblueCloseOperationDefinition = getMorphoBlueCloseOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueCloseOperationDefinition.name,
+      morphoblueCloseOperationDefinition.actions,
+    )
+    this.logOp(morphoblueCloseOperationDefinition)
+
+    const morphoblueAdjustUpOperationDefinition = getMorphoBlueAdjustUpOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueAdjustUpOperationDefinition.name,
+      morphoblueAdjustUpOperationDefinition.actions,
+    )
+    this.logOp(morphoblueAdjustUpOperationDefinition)
+
+    const morphoblueAdjustDownOperationDefinition =
+      getMorphoBlueAdjustDownOperationDefinition(network)
+    await operationsRegistry.addOp(
+      morphoblueAdjustDownOperationDefinition.name,
+      morphoblueAdjustDownOperationDefinition.actions,
+    )
+    this.logOp(morphoblueAdjustDownOperationDefinition)
   }
 
   async addAllEntries() {
@@ -971,6 +1089,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     await this.addAaveEntries()
     await this.addMakerEntries()
     await this.addAjnaEntries()
+    await this.addMorphoBlueEntries()
     await this.addOperationEntries()
   }
 
